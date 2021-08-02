@@ -11,7 +11,7 @@
 // https://www.npmjs.com/package/vanilla-datatables
 
 import { DataTable } from "/node_modules/simple-datatables/dist/module/index.js";
-import {axios} from "./node_modules/@bundled-es-modules/axios/index.js";
+import { axios } from "./node_modules/@bundled-es-modules/axios/index.js";
 
 const myTable = document.querySelector("#myTable");
 
@@ -20,12 +20,13 @@ let tableBody = document.querySelector("tbody#table-body");
 
 // build the table
 const drawTable = (content) => {
-  console.log(content);
+  // console.log(content);
   let allTitles = content.fields;
   let tableDataArr = content.records;
   drawTitles(allTitles);
   // const titlesArr = allTitles.map((title) => title.id);
   drawRows(tableDataArr);
+  getCoords(content.records);
 };
 
 const drawRows = (data) => {
@@ -59,3 +60,76 @@ const response = axios({
   drawTable(res.data.result);
   const dataTable = new DataTable(myTable);
 });
+
+//----------------MAP-----------------------------
+
+const getCoords = (coords) => {
+  const coordsArr = [];
+  for (let index = 0; index < coords.length; index++) {
+    let coordsEl = {
+      x: coords[index].X_Coordinate,
+      y: coords[index].Y_Coordinate,
+    };
+    coordsArr.push(coordsEl);
+  }
+  // console.log(coordsArr);
+  init_map(coordsArr);
+};
+
+// const showOnMap = (coordsArr) => {
+//   // cosnt markerArr = []
+//   for (let index = 0; index < coordsArr.length; index++) {
+//        const marker = new google.maps.Marker({
+//         map: map,
+//         position: new google.maps.LatLng(coordsArr.x, coordsArr.y),
+//       });
+
+//   }
+// };
+
+function init_map(coordsArr) {
+  let cnt = 1;
+  // console.log("coordsArr are: ", coordsArr);
+  let selectorMapElement = document.querySelector("#gmap_canvas");
+  let googleMapTitle = "ATM 1";
+  let googleMapAddress = "disingov 31 Tel-Aviv";
+  let googleMapLat = 32.0798729;
+  let googleMapLong = 34.7938805;
+
+  const myOptions = {
+    zoom: 8,
+    center: new google.maps.LatLng(googleMapLat, googleMapLong),
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+  };
+
+  const infowindow = new google.maps.InfoWindow({
+    content: `
+        <strong>${googleMapTitle}</strong>
+        <br>${googleMapAddress}<br>
+      `,
+  });
+
+  const map = new google.maps.Map(selectorMapElement, myOptions);
+
+  for (let index = 0; index < coordsArr.length; index++) {
+    const marker = new google.maps.Marker({
+      map: map,
+      position: new google.maps.LatLng(coordsArr[index].x, coordsArr[index].y),
+    });
+    console.log("x: ", coordsArr[index].x, "y: ", coordsArr[index].y);
+    google.maps.event.addListener(marker, "click", function () {
+      infowindow.open(map, marker);
+    });
+  }
+
+  // marker2 = new google.maps.Marker({
+  //   map: map,
+  //   position: new google.maps.LatLng(38.2847678, -122.9536827)
+  // });
+
+  //   google.maps.event.addListener(marker2, 'click', function() {
+  //     infowindow.open(map, marker2);
+  // });
+}
+
+google.maps.event.addDomListener(window, "load", init_map);
