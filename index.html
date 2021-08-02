@@ -13,12 +13,19 @@
   </head>
   <body>
     <table class="table text-light bg-dark" id="myTable">
-        <thead>
-          <tr id="table-titles"></tr>
-        </thead>
-        <tbody id="table-body"></tbody>
-      </table>
+      <thead>
+        <tr id="table-titles"></tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+    <!-- google map -->
+    <table id="dataTable"></table>
 
+    <div class="map-container" style="overflow: hidden">
+      <div id="gmap_canvas" styl></div>
+    </div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
     <script type="module" src="/app.js"></script>
   </body>
 </html>
