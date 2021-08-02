@@ -64,11 +64,14 @@ const response = axios({
 //----------------MAP-----------------------------
 
 const getCoords = (coords) => {
+  console.log(coords);
   const coordsArr = [];
   for (let index = 0; index < coords.length; index++) {
     let coordsEl = {
       x: coords[index].X_Coordinate,
       y: coords[index].Y_Coordinate,
+      address: coords[index].ATM_Address,
+      name: coords[index].Bank_Name
     };
     coordsArr.push(coordsEl);
   }
@@ -88,7 +91,7 @@ const getCoords = (coords) => {
 // };
 
 function init_map(coordsArr) {
-  let cnt = 1;
+
   // console.log("coordsArr are: ", coordsArr);
   let selectorMapElement = document.querySelector("#gmap_canvas");
   let googleMapTitle = "ATM 1";
@@ -102,12 +105,12 @@ function init_map(coordsArr) {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
   };
 
-  const infowindow = new google.maps.InfoWindow({
-    content: `
-        <strong>${googleMapTitle}</strong>
-        <br>${googleMapAddress}<br>
-      `,
-  });
+  // let infowindow = new google.maps.InfoWindow({
+  //   content: `
+  //       <strong>${googleMapTitle}</strong>
+  //       <br>${googleMapAddress}<br>
+  //     `
+  // });
 
   const map = new google.maps.Map(selectorMapElement, myOptions);
 
@@ -116,11 +119,18 @@ function init_map(coordsArr) {
       map: map,
       position: new google.maps.LatLng(coordsArr[index].x, coordsArr[index].y),
     });
-    console.log("x: ", coordsArr[index].x, "y: ", coordsArr[index].y);
+    // console.log("x: ", coordsArr[index].x, "y: ", coordsArr[index].y);
     google.maps.event.addListener(marker, "click", function () {
       infowindow.open(map, marker);
     });
-  }
+
+    let infowindow = new google.maps.InfoWindow({
+      content: `
+          <strong>${coordsArr[index].name}</strong>
+          <br>${coordsArr[index].address}<br>
+        `
+    });
+  } // for
 
   // marker2 = new google.maps.Marker({
   //   map: map,
