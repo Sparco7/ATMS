@@ -69,14 +69,14 @@ const response = axios({
 const showOnMap = (dataAtm) => {
   const dataTableInput = document.querySelector(".dataTable-input");
   dataTableInput.addEventListener("input", (event) => {
-   const searchValue = event.target.value;
-    const data = dataAtm
+    const searchValue = event.target.value;
+    const data = dataAtm;
     // console.log(dataTable.searchData);
     // console.log(dataTable.data()[0]);
 
-    let filtered = filterTable(data, searchValue)
+    let filtered = filterTable(data, searchValue);
     console.log(filtered);
-    let filteredFields = getCoords(filtered)
+    getCoords(filtered);
     // selectorMapElement.innerHTML = ''
     // map = new google.maps.Map(selectorMapElement, myOptions)
     // init_map(filteredFields)
@@ -85,23 +85,32 @@ const showOnMap = (dataAtm) => {
 
 // filter results
 const filterTable = (data, val) => {
-  return data.filter(atm => {
-    return atm.City.includes(val)
-  })
-}
+  return data.filter((atm) => {
+    return atm.City.includes(val);
+  });
+};
 
 const getCoords = (coords) => {
-  // console.log(coords);
   const coordsArr = [];
   for (let index = 0; index < coords.length; index++) {
-    let coordsEl = {
-      x: coords[index].X_Coordinate,
-      y: coords[index].Y_Coordinate,
-      address: coords[index].ATM_Address,
-      name: coords[index].Bank_Name,
-    };
+    let coordsEl;
+    if (coords[index].Y_Coordinate > 34) {
+      coordsEl = {
+        x: coords[index].X_Coordinate,
+        y: coords[index].Y_Coordinate,
+        address: coords[index].ATM_Address,
+        name: coords[index].Bank_Name,
+      };
+    } else {
+      coordsEl = {
+        x: coords[index].Y_Coordinate,
+        y: coords[index].X_Coordinate,
+        address: coords[index].ATM_Address,
+        name: coords[index].Bank_Name,
+      };
+    } // else
     coordsArr.push(coordsEl);
-  }
+  } // for
 
   init_map(coordsArr);
 };
